@@ -1,0 +1,59 @@
+import React from "react";
+import "./style.css";
+import Search from "../../components/Search/search";
+import { Box } from "@mui/material";
+import MovieCard from "../../components/movies/movieCards";
+import MovieDetail from "../../components/movies/movieDetail";
+
+function Movies(props) {
+  const [movies, setMovies] = React.useState([]);
+  const [searchText, setSearchText] = React.useState("");
+  const [selectedMovie, setSelectedMovie] = React.useState({});
+  const [openDetail, setOpenDetail] = React.useState(false);
+  return (
+    <div>
+      <Box
+        className={"movies-wrapper"}
+        px={{ sm: 2, md: 10, xs: 1 }}
+        py={{ sm: 2, md: 2, xs: 1 }}
+      >
+        <Search
+          onMovieSearch={(data, txt) => {
+            setMovies(data);
+            setSearchText(txt);
+          }}
+        />
+      </Box>
+      {movies?.page_number ? (
+        <Box
+          sx={{ background: "#212121", color: "#fff" }}
+          px={{ sm: 2, md: 10, xs: 1 }}
+          py={{ sm: 2, md: 2, xs: 1 }}
+        >
+          <h4>{movies?.movie_count} movies found.</h4>
+          <div className={"results-wrapper"}>
+            {movies?.movies?.map((item) => (
+              <MovieCard
+                key={item.id}
+                onMovieClicked={(movie) => {
+                  setSelectedMovie(movie);
+                  setOpenDetail(true);
+                }}
+                movie={item}
+              />
+            ))}
+          </div>
+        </Box>
+      ) : (
+        ""
+      )}
+      <MovieDetail
+        handleClose={() => setOpenDetail(false)}
+        open={openDetail}
+        movieId={selectedMovie?.id}
+      />
+    </div>
+  );
+}
+
+export default Movies;
